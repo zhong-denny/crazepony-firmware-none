@@ -54,6 +54,23 @@ S_FLOAT_XYZ DIF_ACC;		//实际去期望相差的加速度
 S_FLOAT_XYZ EXP_ANGLE;	//期望角度	
 S_FLOAT_XYZ DIF_ANGLE;	//实际与期望相差的角度	
 
+void ControlerDemo(void)
+{     
+    static char Counter_Cnt=0;
+    Counter_Cnt++;
+    DMP_Routing();	        //DMP 线程  所有的数据都在这里更新
+    DMP_getYawPitchRoll();  //读取 姿态角
+    #ifndef Debug
+    Send_AtitudeToPC();     
+    #else
+    #endif    
+    if(Counter_Cnt==5)
+    {
+	    Counter_Cnt=0;
+		//PID_Calculate();     //=2时控制一次,频率200HZ	
+    }
+}
+
 //函数名：Controler()
 //输入：无
 //输出: 无
@@ -74,10 +91,10 @@ void Controler(void)
   
     if(Counter_Cnt==5)
     {
-    Counter_Cnt=0;
-    Nrf_Irq();           //从2.4G接收控制目标参数
-    //ReceiveDataFormUART();//从蓝牙透传模块接收控制目标参数，和2.4G接收控制只能选其一
-    PID_Calculate();     //=2时控制一次,频率200HZ	
+	    Counter_Cnt=0;
+		Nrf_Irq();           //从2.4G接收控制目标参数
+	    //ReceiveDataFormUART();//从蓝牙透传模块接收控制目标参数，和2.4G接收控制只能选其一
+	    PID_Calculate();     //=2时控制一次,频率200HZ	
     }
 }
 

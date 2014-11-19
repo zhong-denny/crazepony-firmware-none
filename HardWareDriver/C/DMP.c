@@ -524,7 +524,7 @@ void DMP_Covert_Data(void){
 	DMP_DATA.dmp_accy = (((float)DMP_DATA.ACCy)/8192.0f)*g;
 	DMP_DATA.dmp_accz = (((float)DMP_DATA.ACCz)/8192.0f)*g;
   
-	  q[0] = (float)DMP_DATA.qw; 	//提取DMP的四元数
+	q[0] = (float)DMP_DATA.qw; 	//提取DMP的四元数
   	q[1] = (float)DMP_DATA.qx;
   	q[2] = (float)DMP_DATA.qy;
   	q[3] = (float)DMP_DATA.qz;

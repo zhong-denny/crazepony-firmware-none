@@ -27,6 +27,8 @@
 #include "Battery.h"
 #include "HMC5883L.h"
 
+#define DEMOFLY
+#define GL_Second  9000000
 
 #endif
 

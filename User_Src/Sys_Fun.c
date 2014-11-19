@@ -104,9 +104,12 @@ void PowerOn()
   while(NRF24L01_RXDATA[30]!=0xA5)//保证收到一个完整的数据包32个字节,再继续下面的程序
     {
         Nrf_Irq();printf("等待遥控接入...\r\n");
-        LedA_on;LedB_on;LedC_on;LedD_on;Delay(900000);LedA_off;LedB_off;LedC_off;LedD_off;Delay(900000*3);
+        LedA_on;LedB_on;LedC_on;LedD_on;
+		Delay(1*GL_Second);
+		LedA_off;LedB_off;LedC_off;LedD_off;
+		Delay(5*GL_Second);
     }
-    printf("已检测到遥控信号...\r\n");
+  printf("已检测到遥控信号...\r\n");
 
     for(i=0;i<4;i++)//循环闪烁4次
     {

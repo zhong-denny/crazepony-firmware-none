@@ -24,6 +24,13 @@ main.c file
 
 #include "config.h"        //包含所有的驱动头文件
 
+#include "control.h"
+#include "moto.h"
+#include "extern_variable.h"
+
+#define MAX_MOTOR_SPEED 500
+S_FLOAT_ANGLE  groud_angle;
+
 /********************************************
               飞控主函数入口
 功能：                                        
@@ -34,6 +41,13 @@ main.c file
 ********************************************/
 int main(void)
 {
+  int MotorSpeed, i;
+  long Motor[4]; 
+  long iMotor[4];
+  
+  MotorSpeed = 10;
+  
+
   SystemClock_HSE(9);           //系统时钟初始化，时钟源外部晶振HSE
   //SystemClock_HSI(9);         //系统时钟初始化，时钟源内部HSI
   UART1_init(SysClock,115200); 	//串口1初始化
@@ -60,23 +74,44 @@ int main(void)
   //BT_ATcmdWrite();              //蓝牙写配置
   //BT_off();                     //蓝牙关闭
   //ParameterWrite();             //写参数到内部模拟eeprom
+  printf("Init int 3\r\n");
   TIM3_Init(SysClock,1000);	    //定时器3初始化，调试串口输出
+  printf("Init int 4\r\n");
   TIM4_Init(SysClock,1000);	    //定时器4初始化，定时采样传感器数据，更新PID输出，定时器定时基石为1us，PID更新周期为4ms，所以姿态更新频率 为250Hz    
-                                
-  while (1)                    //等待数据更新中断到来
-  {    
+  printf("Init int done\r\n");
 
-//测试环形缓冲数组用，可以无视或者直接注释掉。不注释也不影响操作
-//     printf("\r\n收到数据[%d] = %d\r\n",i,rx_buffer[i++]);
-//     printf("读指针 = %d\r\n",UartRxbuf.Rd_Indx & UartRxbuf.Mask);
-//     printf("写指针 = %d\r\n",UartRxbuf.Wd_Indx & UartRxbuf.Mask);
-//     printf("可用%d字节\r\n",UartBuf_Cnt(&UartRxbuf));
-//     if(i>UartRxbuf.Mask){
-//     i=0;
-//     //UartBuf_RD(&UartRxbuf);
-//     printf("*********************\r\n");
-//     }
-/////////////////////////////////////////////////////////////////
+
+  //wait for 10 sec
+  //Delay( 3 * GL_Second);
+  printf("****DEMOFLY...\r\n");
+
+  //保存当前位置，用于起飞后悬空停止对比高度
+  groud_angle.Yaw = Q_ANGLE.Yaw;
+  groud_angle.Pitch = Q_ANGLE.Pitch;
+  groud_angle.Roll = Q_ANGLE.Roll;  
+
+  //逐渐提高马达转速，判断是否起飞，当起飞到一定高度，停止变化。
+
+  for (i=0;i<4;i++){
+  	iMotor[i] = 1;
   }
+
+  while (1)
+  {
+	if (MotorSpeed < MAX_MOTOR_SPEED){
+		MotorSpeed ++;
+	}
+	for (i=0;i<4;i++){
+		Motor[i] = (int16_t) (MotorSpeed * iMotor[i]); 
+	}
+
+    MotorPwmFlash(Motor[0],Motor[1],Motor[2],Motor[3]);   
+    printf("Speed is %d\r\n", MotorSpeed);
+    //DMP_DATA.dmp_accx;
+    //DMP_DATA.dmp_accy;
+    //DMP_DATA.dmp_accz;
+   	Delay(  9000 );
+  }
+
 }
 

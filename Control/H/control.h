@@ -34,6 +34,7 @@ typedef struct
 
 
 void Controler(void);
+void ControlerDemo(void);
 void PID_INIT(void);
 void PID_Calculate(void);
 char  ParameterWrite(void);

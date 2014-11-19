@@ -31,10 +31,10 @@ float Compass_HMC[3];
 //控制入口
 void TIM4_IRQHandler(void)		//1ms中断一次,用于程序读取6050等
 {
+	/*
     if( TIM_GetITStatus(TIM4 , TIM_IT_Update) != RESET ) 
     {     
           Controler(); //控制函数
-                  
           //HMC58X3_mgetValues(&Compass_HMC[0]);       
           LedCounter++;//led闪烁计数值
           if(Battery.BatteryAD > Battery.BatteryADmin)//当电池电压在设定值之上时，正常模式
@@ -48,9 +48,26 @@ void TIM4_IRQHandler(void)		//1ms中断一次,用于程序读取6050等
               else if(LedCounter==20){LedCounter=0;LedA_on;LedB_on;LedC_on;LedD_on;}
           }
           if(LedCounter>=31)LedCounter=0;
+          TIM_ClearITPendingBit(TIM4 , TIM_FLAG_Update);   //清除中断标志   
+    }
+    */
 
-          
-          
+    if( TIM_GetITStatus(TIM4 , TIM_IT_Update) != RESET ) 
+    {     
+          ControlerDemo(); //控制函数
+          //HMC58X3_mgetValues(&Compass_HMC[0]);       
+          LedCounter++;//led闪烁计数值
+          if(Battery.BatteryAD > Battery.BatteryADmin)//当电池电压在设定值之上时，正常模式
+          {
+              if(LedCounter==10){ LedA_off;LedB_off;}   //遥控端使能后，闪灯提示        
+              else if(LedCounter==30){LedCounter=0;LedA_on;LedB_on;}
+          }
+          else //电池电压低时，闪灯提示
+          {
+              if(LedCounter==10){ LedA_off;LedB_off;LedC_off;LedD_off;}   //遥控端使能后，闪灯提示        
+              else if(LedCounter==20){LedCounter=0;LedA_on;LedB_on;LedC_on;LedD_on;}
+          }
+          if(LedCounter>=31)LedCounter=0;
           TIM_ClearITPendingBit(TIM4 , TIM_FLAG_Update);   //清除中断标志   
     }
 }
@@ -75,18 +92,18 @@ void TIM3_IRQHandler(void)		//打印中断服务程序
             {
             DebugCounter=0;
             printf(" ******************************************************************\r\n");
-            printf(" *       ____                      _____                  +---+   *\r\n");
-            printf(" *      / ___\\                     / __ \\                 | R |   *\r\n");
-            printf(" *     / /                        / /_/ /                 +---+   *\r\n");
-            printf(" *    / /   ________  ____  ___  / ____/___  ____  __   __        *\r\n");
-            printf(" *   / /  / ___/ __ `/_  / / _ \\/ /   / __ \\/ _  \\/ /  / /        *\r\n");
-            printf(" *  / /__/ /  / /_/ / / /_/  __/ /   / /_/ / / / / /__/ /         *\r\n");
-            printf(" *  \\___/_/   \\__,_/ /___/\\___/_/    \\___ /_/ /_/____  /          *\r\n");
-            printf(" *                                                  / /           *\r\n");
-            printf(" *                                             ____/ /            *\r\n");
-            printf(" *                                            /_____/             *\r\n");
-            printf(" ******************************************************************\r\n");
-            printf("\r\n");
+            //printf(" *       ____                      _____                  +---+   *\r\n");
+            //printf(" *      / ___\\                     / __ \\                 | R |   *\r\n");
+            //printf(" *     / /                        / /_/ /                 +---+   *\r\n");
+            //printf(" *    / /   ________  ____  ___  / ____/___  ____  __   __        *\r\n");
+            //printf(" *   / /  / ___/ __ `/_  / / _ \\/ /   / __ \\/ _  \\/ /  / /        *\r\n");
+            //printf(" *  / /__/ /  / /_/ / / /_/  __/ /   / /_/ / / / / /__/ /         *\r\n");
+            //printf(" *  \\___/_/   \\__,_/ /___/\\___/_/    \\___ /_/ /_/____  /          *\r\n");
+            //printf(" *                                                  / /           *\r\n");
+            //printf(" *                                             ____/ /            *\r\n");
+            //printf(" *                                            /_____/             *\r\n");
+            //printf(" ******************************************************************\r\n");
+            //printf("\r\n");
             printf(" Crazepony-II报告：系统正在运行...\r\n"); 
             printf("\r\n");
             printf("\r\n--->机身实时姿态广播信息<---\r\n");
